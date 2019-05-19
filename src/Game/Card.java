@@ -6,7 +6,7 @@ public class Card {
     private boolean Pressed = false;
     private int x = 0;
     private int y = 0;
-    private boolean visible;
+    private boolean visible = true;
     private int id = 0;
     private Image img;
 

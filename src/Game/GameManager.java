@@ -8,82 +8,89 @@ import Engine.gfx.Image;
 import java.awt.event.MouseEvent;
 
 public class GameManager extends AbstractGame {
+    private int block = 0;
     private Image background = new Image("Game/Background.jpg");
-    private Card Card1;
-    private Card Card2;
-    private Card Card3;
+    private Card card[] = {null, new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif"))};
 
     public GameManager() {
-        Card1 = new Card(new Image("Game/Card1.gif"));
-        Card2 = new Card(new Image("Game/Card1.gif"));
-        Card3 = new Card(new Image("Game/Card1.gif"));
-        Card1.setX(250);
-        Card1.setY(150);
-        Card2.setX(Card1.getX() + 250);
-        Card2.setY(150);
-        Card3.setX(Card2.getX() + 250);
-        Card3.setY(150);
+        card[1].setId(2);
+        card[2].setId(1);
+        card[3].setId(1);
+        card[4].setId(2);
+        card[1].setX(100);
+        card[1].setY(150);
+        card[2].setX(card[1].getX() + 250);
+        card[2].setY(150);
+        card[3].setX(card[2].getX() + 250);
+        card[3].setY(150);
+        card[4].setX(card[3].getX() + 250);
+        card[4].setY(150);
+    }
+
+    public void PressCard(int number) {
+        card[number].Pressed(true);
+        new Thread(() -> {
+            block+=1;
+            card[number].setImg(new Image("Game/Card" + card[number].getId() + "_open.gif"));
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            card[number].setImg(new Image("Game/Card_close.gif"));
+            card[number].Pressed(false);
+            block-=1;
+        }).start();
     }
 
     @Override
     public void update(GameContainer Game, float dt) {
-        if (collision(Card1, Game.input.mouseX, Game.input.mouseY)) {
-            if ((Game.input.isButton(MouseEvent.BUTTON1))) {
-                Card1.Pressed(true);
-                new Thread(() -> {
-                    Card1.setImg(new Image("Game/Card1_open.gif"));
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Card1.setImg(new Image("Game/Card1.gif"));
-                }).start();
-                Card1.Pressed(false);
+        if (collision(card[1], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                if (block != 2) PressCard(1);
             }
-
         }
-        if (collision(Card2, Game.input.mouseX, Game.input.mouseY)) {
-            if ((Game.input.isButton(MouseEvent.BUTTON1))) {
-                Card2.Pressed(true);
-                new Thread(() -> {
-                    Card2.setImg(new Image("Game/Card1_open.gif"));
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Card2.setImg(new Image("Game/Card1.gif"));
-                }).start();
-                Card2.Pressed(false);
+        if (collision(card[2], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                if (block != 2) PressCard(2);
             }
-
         }
-        if (collision(Card3, Game.input.mouseX, Game.input.mouseY)) {
-            if ((Game.input.isButton(MouseEvent.BUTTON1))) {
-                Card3.Pressed(true);
-                new Thread(() -> {
-                    Card3.setImg(new Image("Game/Card1_open.gif"));
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Card3.setImg(new Image("Game/Card1.gif"));
-                }).start();
-                Card3.Pressed(false);
+        if (collision(card[3], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                if (block != 2) PressCard(3);
             }
-
         }
+        if (collision(card[4], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                if (block != 2) PressCard(4);
+            }
+        }
+        for (int a_check = 1; a_check <= 4; a_check++) {
+            if (card[a_check].isPressed()) {
+                for (int b_check = 1; b_check <= 4; b_check++) {
+                    if (a_check != b_check && card[b_check].isPressed()) {
+                        if (card[a_check].getId() == card[b_check].getId()) {
+                            card[a_check].setVisible(false);
+                            card[a_check].Pressed(false);
+                            card[b_check].setVisible(false);
+                            card[b_check].Pressed(false);
+                            System.out.println("Хорош");
 
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void render(GameContainer Game, Renderer r) {
         r.drawImage(background, 0, 0);
-        r.drawImage(Card1.getImg(), Card1.getX(), Card1.getY());
-        r.drawImage(Card2.getImg(), Card2.getX(), Card2.getY());
-        r.drawImage(Card3.getImg(), Card3.getX(), Card3.getY());
+
+        if (card[1].isVisible()) r.drawImage(card[1].getImg(), card[1].getX(), card[1].getY());
+        if (card[2].isVisible()) r.drawImage(card[2].getImg(), card[2].getX(), card[2].getY());
+        if (card[3].isVisible()) r.drawImage(card[3].getImg(), card[3].getX(), card[3].getY());
+        if (card[4].isVisible()) r.drawImage(card[4].getImg(), card[4].getX(), card[4].getY());
     }
 
     public boolean collision(Card a, int mouseX, int mouseY) {
