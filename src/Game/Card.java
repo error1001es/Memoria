@@ -14,11 +14,6 @@ public class Card {
         return Pressed;
     }
 
-    public void setImage(Image img) {
-        this.img = img;
-    }
-
-
     public Card(Image img) {
         this.img = img;
     }
