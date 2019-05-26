@@ -4,6 +4,7 @@ import Engine.AbstractGame;
 import Engine.GameContainer;
 import Engine.Renderer;
 import Engine.gfx.Image;
+import Menu.MenuManager;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -15,27 +16,45 @@ public class Level_3 extends AbstractGame {
     private int LastScore = 0;
     private Image background = new Image("Game/Background.jpg");
     private Image win = new Image("Game/Winner.jpg");
-    private Card card[] = {null, new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")),new Card(new Image("Game/Card_close.gif")),new Card(new Image("Game/Card_close.gif"))};
+    private Card card[] = {null, new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif")), new Card(new Image("Game/Card_close.gif"))};
 
     public Level_3() {
-        card[1].setId(2);
-        card[2].setId(1);
-        card[3].setId(1);
+        card[1].setId(4);
+        card[2].setId(3);
+        card[3].setId(3);
         card[4].setId(2);
         card[5].setId(2);
-        card[6].setId(2);
-        card[1].setX(250);
-        card[1].setY(50);
-        card[2].setX(card[1].getX() + 300);
-        card[2].setY(50);
-        card[3].setX(card[2].getX() + 300);
-        card[3].setY(50);
-        card[4].setX(250);
-        card[4].setY(350);
-        card[5].setX(card[4].getX() + 300);
-        card[5].setY(350);
-        card[6].setX(card[5].getX() + 300);
-        card[6].setY(350);
+        card[6].setId(1);
+        card[7].setId(1);
+        card[8].setId(4);
+        card[9].setId(5);
+        card[10].setId(6);
+        card[11].setId(5);
+        card[12].setId(6);
+        card[1].setX(175);
+        card[2].setX(card[1].getX() + 225);
+        card[3].setX(card[2].getX() + 225);
+        card[4].setX(card[3].getX() + 225);
+        card[1].setY(25);
+        card[2].setY(25);
+        card[3].setY(25);
+        card[4].setY(25);
+        card[5].setX(175);
+        card[6].setX(card[5].getX() + 225);
+        card[7].setX(card[6].getX() + 225);
+        card[8].setX(card[7].getX() + 225);
+        card[5].setY(325);
+        card[6].setY(325);
+        card[7].setY(325);
+        card[8].setY(325);
+        card[9].setX(175);
+        card[10].setX(card[9].getX() + 225);
+        card[11].setX(card[10].getX() + 225);
+        card[12].setX(card[11].getX() + 225);
+        card[9].setY(625);
+        card[10].setY(625);
+        card[11].setY(625);
+        card[12].setY(625);
     }
 
     public void PressCard(int number) {
@@ -43,28 +62,28 @@ public class Level_3 extends AbstractGame {
             card[number].Pressed(true);
             new Thread(() -> {
                 block += 1;
-                card[number].setImg(new Image("Game/Card" + card[number].getId() + "_open.gif"));
+                card[number].open();
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                card[number].setImg(new Image("Game/Card_close.gif"));
+                card[number].close();
                 card[number].Pressed(false);
                 block -= 1;
             }).start();
         }
-        for (int a_check = 1; a_check <= 6; a_check++) {
+        for (int a_check = 1; a_check <= 12; a_check++) {
             if (card[a_check].isPressed()) {
-                for (int b_check = 1; b_check <= 6; b_check++) {
+                for (int b_check = 1; b_check <= 12; b_check++) {
                     if (a_check != b_check && card[b_check].isPressed() && card[a_check].getId() == card[b_check].getId()) {
                         int Card1 = a_check;
                         int Card2 = b_check;
+                        card[Card1].Pressed(false);
+                        card[Card2].Pressed(false);
                         new Thread(() -> {
-                            card[Card1].Pressed(false);
-                            card[Card2].Pressed(false);
                             try {
-                                Thread.sleep(1500);
+                                Thread.sleep(1000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -85,8 +104,20 @@ public class Level_3 extends AbstractGame {
 
     @Override
     public void update(GameContainer Game, float dt) {
-        if (Game.input.isKeyDown(KeyEvent.VK_SPACE)) {
-            System.out.println("Score: " + Score);
+        if(Score==6){
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Game.stop();
+            GameContainer Menu = new GameContainer(new MenuManager());
+            Menu.start();
+        }
+        if (Game.input.isKeyDown(KeyEvent.VK_ESCAPE)){
+            Game.stop();
+            GameContainer Menu = new GameContainer(new MenuManager());
+            Menu.start();
         }
         if (collision(card[1], Game.input.mouseX, Game.input.mouseY)) {
             if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
@@ -118,6 +149,36 @@ public class Level_3 extends AbstractGame {
                 PressCard(6);
             }
         }
+        if (collision(card[7], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                PressCard(7);
+            }
+        }
+        if (collision(card[8], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                PressCard(8);
+            }
+        }
+        if (collision(card[9], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                PressCard(9);
+            }
+        }
+        if (collision(card[10], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                PressCard(10);
+            }
+        }
+        if (collision(card[11], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                PressCard(11);
+            }
+        }
+        if (collision(card[12], Game.input.mouseX, Game.input.mouseY)) {
+            if ((Game.input.isButtonDown(MouseEvent.BUTTON1))) {
+                PressCard(12);
+            }
+        }
     }
 
     @Override
@@ -129,16 +190,14 @@ public class Level_3 extends AbstractGame {
         if (card[4].isVisible()) r.drawImage(card[4].getImg(), card[4].getX(), card[4].getY());
         if (card[5].isVisible()) r.drawImage(card[5].getImg(), card[5].getX(), card[5].getY());
         if (card[6].isVisible()) r.drawImage(card[6].getImg(), card[6].getX(), card[6].getY());
-        if (Score==3){
-            r.drawImage(win,r.pW/2-win.w/2,r.pH/2-win.h/2);
-            new Thread(() -> {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.exit(1);
-            }).start();
+        if (card[7].isVisible()) r.drawImage(card[7].getImg(), card[7].getX(), card[7].getY());
+        if (card[8].isVisible()) r.drawImage(card[8].getImg(), card[8].getX(), card[8].getY());
+        if (card[9].isVisible()) r.drawImage(card[9].getImg(), card[9].getX(), card[9].getY());
+        if (card[10].isVisible()) r.drawImage(card[10].getImg(), card[10].getX(), card[10].getY());
+        if (card[11].isVisible()) r.drawImage(card[11].getImg(), card[11].getX(), card[11].getY());
+        if (card[12].isVisible()) r.drawImage(card[12].getImg(), card[12].getX(), card[12].getY());
+        if (Score == 6) {
+            r.drawImage(win, r.pW / 2 - win.w / 2, r.pH / 2 - win.h / 2);
         }
     }
 

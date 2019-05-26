@@ -9,9 +9,9 @@ public class GameContainer implements Runnable {
     public AbstractGame game;
 
     public int width = 1280;
-    public int height = 720;
+    public int height = 950;
     public int scale = 1;
-    public String title = "title";
+    public String title = "Memoria";
 
 
     private boolean running = false;
