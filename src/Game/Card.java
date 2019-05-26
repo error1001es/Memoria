@@ -33,7 +33,12 @@ public class Card {
     public int getX() {
         return x;
     }
-
+    public void open() {
+        this.img = new Image("Game/Card" + this.id + ".png");
+    }
+    public void close() {
+        this.img = new Image("Game/Card_close.gif");
+    }
     public void setX(int x) {
         this.x = x;
     }
